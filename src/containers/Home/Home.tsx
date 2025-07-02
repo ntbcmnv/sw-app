@@ -1,6 +1,7 @@
 import CreditsDepositsChart from '@/components/CreditsDepositsChart/CreditsDepositsChart.tsx';
 import ClientsTypesChart from '@/components/ClientsTypesChart/ClientsTypesChart.tsx';
 import ClientsAmountChart from '@/components/ClientsAmountChart/ClientsAmountChart.tsx';
+import BanksCards from '@/containers/BanksCards/BanksCards.tsx';
 
 const Home = () => {
   return (
@@ -21,6 +22,8 @@ const Home = () => {
           <ClientsAmountChart/>
         </div>
       </div>
+
+      <BanksCards/>
     </>
   );
 };
