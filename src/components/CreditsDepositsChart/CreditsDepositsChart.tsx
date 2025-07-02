@@ -1,85 +1,49 @@
-'use client';
-
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts';
-
-interface ChartConfig {
-  [key: string]: {
-    label: string;
-    color: string;
-  };
-}
-
-interface ChartTooltipEntry {
-  dataKey: string;
-  value: number;
-  payload: Record<string, unknown>;
-}
-
-interface ChartTooltipContentProps {
-  payload?: ChartTooltipEntry[];
-  active?: boolean;
-  config: ChartConfig;
-}
-
-function ChartTooltipContent({
-  payload,
-  active,
-  config,
-}: ChartTooltipContentProps) {
-  if (!active || !payload || payload.length === 0) return null;
-
-  return (
-    <div className="max-w-[300px] rounded border bg-background p-4 shadow-sm">
-      <p className="text-sm font-medium text-muted-foreground">
-        {String(payload[0].payload.year)}
-      </p>
-      {payload.map((entry, index) => (
-        <div key={index} className="mt-2 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div
-              className="h-3 w-3 rounded-full"
-              style={{backgroundColor: config[entry.dataKey]?.color}}
-            />
-            <span className="text-xs text-muted-foreground">
-              {config[entry.dataKey]?.label}
-            </span>
-            <span className="text-sm font-medium">
-            {entry.value.toLocaleString('ru-RU')}
-          </span>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+import { useChartZoom } from '@/components/ChartZoomControls/hooks/useChartZoom.ts';
+import { ChartZoomControls } from '@/components/ChartZoomControls/ChartZoomControls.tsx';
+import { ChartTooltipContent } from '@/components/ui/chart.tsx';
+import { useCreditsDepositsChart } from '@/components/CreditsDepositsChart/hooks/useCreditsDepositsChart.ts';
 
 export default function CreditsDepositsChart() {
-  const chartData = [
-    {year: '2020', credits: 85000, deposits: 25000},
-    {year: '2021', credits: 91000, deposits: 27000},
-    {year: '2022', credits: 100000, deposits: 30000},
-    {year: '2023', credits: 98000, deposits: 35000},
-    {year: '2024', credits: 115000, deposits: 40000},
-  ];
-
-  const chartConfig: ChartConfig = {
-    credits: {
-      label: 'Кредиты',
-      color: '#3b82f6',
-    },
-    deposits: {
-      label: 'Депозиты',
-      color: '#22c55e',
-    },
-  };
-
-  const yAxisTicks = [20000, 40000, 60000, 80000, 100000, 120000];
+  const {
+    fullData,
+    chartConfig,
+    yAxisTicks
+  } = useCreditsDepositsChart()
+  const {
+    visibleData,
+    zoomIn,
+    zoomOut,
+    moveLeft,
+    moveRight,
+    reset,
+    canZoomIn,
+    canZoomOut,
+    canMoveLeft,
+    canMoveRight,
+  } = useChartZoom(fullData, 3);
 
   return (
     <div className="m-6 text-sm">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <h3 className="font-bold text-sm ms-2 sm:ms-0">Кредиты и Депозиты</h3>
+        <ChartZoomControls
+          zoomIn={zoomIn}
+          zoomOut={zoomOut}
+          moveLeft={moveLeft}
+          moveRight={moveRight}
+          reset={reset}
+          canZoomIn={canZoomIn}
+          canZoomOut={canZoomOut}
+          canMoveLeft={canMoveLeft}
+          canMoveRight={canMoveRight}
+        />
+      </div>
+
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart
-          data={chartData}
+          data={visibleData}
+          margin={{top: 20, right: 0, bottom: 0, left: 16}}
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false}/>
           <XAxis
@@ -88,6 +52,7 @@ export default function CreditsDepositsChart() {
             axisLine={false}
             tickMargin={8}
           />
+
           <YAxis
             tickLine={false}
             axisLine={false}
@@ -97,10 +62,9 @@ export default function CreditsDepositsChart() {
               typeof value === 'number' ? value.toLocaleString('ru-RU') : value
             }
           />
-          <Tooltip
-            cursor={false}
-            content={<ChartTooltipContent config={chartConfig}/>}
-          />
+
+          <Tooltip cursor={false} content={<ChartTooltipContent config={chartConfig}/>}/>
+
           {Object.keys(chartConfig).map((key) => (
             <Area
               key={key}

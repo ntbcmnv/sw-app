@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { BankRate } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Clock } from 'lucide-react';
@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ru'
 import { currencyData } from '@/helpers/globals.ts';
 import { Separator } from '@/components/ui/separator.tsx';
+import { useBankCard } from '@/components/BankCard/hooks/useBankCard.ts';
 
 dayjs.locale('ru')
 
@@ -14,20 +15,11 @@ interface Props {
 }
 
 const BankCard: React.FC<Props> = ({info}) => {
-  const [logoError, setLogoError] = useState(false);
-
-  let logoUrl = '';
-
-  try {
-    if (info.website_url?.startsWith('http')) {
-      const domain = new URL(info.website_url).hostname;
-      logoUrl = `https://logo.clearbit.com/${domain}`;
-    }
-  } catch (error) {
-    logoUrl = '';
-    console.error('Invalid website_url:', info.website_url, error);
-  }
-
+  const {
+    logoError,
+    setLogoError,
+    logoUrl,
+  } = useBankCard(info)
 
   return (
     <Card className="flex flex-col h-full shadow-none">
