@@ -2,9 +2,11 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore } from 'redux-persist';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
 import { ratesReducer } from '@/store/slices/ratesSlice.ts';
+import { themeReducer } from '@/store/slices/themeSlice.ts';
 
 const rootReducer = combineReducers({
   rates: ratesReducer,
+  theme: themeReducer,
 });
 
 export const store = configureStore({
