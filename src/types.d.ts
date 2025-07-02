@@ -23,3 +23,10 @@ export interface BankRate {
   rates: CurrencyRate[];
   website_url: string;
 }
+
+export interface ChartConfig {
+  [key: string]: {
+    label: string;
+    color: string;
+  };
+}
