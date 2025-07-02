@@ -1,5 +1,3 @@
-'use client'
-
 import { Cell, Pie, PieChart, Tooltip } from 'recharts'
 
 interface TooltipPayloadEntry {
@@ -39,7 +37,7 @@ function CustomTooltip({
   const color = chartConfig[region]?.color || '#000'
 
   return (
-    <div className="rounded border bg-white p-3 shadow-md max-w-[200px]">
+    <div className="rounded bg-white dark:bg-gray-800 p-3 shadow-md max-w-[200px]">
       <div className="flex items-center gap-2 mb-2">
         <div className="h-3 w-3 rounded-full" style={{backgroundColor: color}}/>
         <span className="font-semibold text-sm">{region}</span>
